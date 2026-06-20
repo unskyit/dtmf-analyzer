@@ -5,190 +5,272 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Unksyit Pro DTMF Analyzer</title>
     <style>
-        /* Unksyit Calm Blue Light Theme */
+        /* Modern Unksyit Calm & Joyful Light Theme */
         :root {
-            --Unksyit-bg: #f0f7ff;
-            --Unksyit-card: #ffffff;
-            --Unksyit-primary: #0066cc;
-            --Unksyit-primary-hover: #004c99;
-            --Unksyit-text: #2c3e50;
-            --Unksyit-border: #cce0ff;
-            --Unksyit-term-bg: #e6f2ff;
-            --Unksyit-term-text: #004080;
-            --Unksyit-success: #00994d;
-            --Unksyit-danger: #cc0000;
+            /* Soft, soothing background gradient */
+            --Unksyit-bg-gradient: linear-gradient(135deg, #fdfbfb 0%, #ebedee 100%);
+            --Unksyit-bg-gradient-alt: linear-gradient(120deg, #e0c3fc 0%, #8ec5fc 100%);
+            --Unksyit-body-bg: #e2eafc;
+            
+            /* Glassy Card Elements */
+            --Unksyit-card-bg: rgba(255, 255, 255, 0.85);
+            --Unksyit-card-border: rgba(255, 255, 255, 0.6);
+            
+            /* Typography & Accents */
+            --Unksyit-primary: #4a90e2;
+            --Unksyit-primary-hover: #357abd;
+            --Unksyit-text: #2d3748;
+            --Unksyit-text-muted: #718096;
+            --Unksyit-success: #38b2ac;
+            --Unksyit-danger: #fc8181;
+            
+            /* Subtle layered shadows for depth */
+            --Unksyit-shadow: 0 20px 40px rgba(0, 0, 0, 0.04), 0 1px 3px rgba(0, 0, 0, 0.02);
+            --Unksyit-shadow-hover: 0 25px 50px rgba(0, 0, 0, 0.06), 0 2px 5px rgba(0, 0, 0, 0.03);
+            
+            --Unksyit-radius: 20px;
+            --Unksyit-radius-sm: 12px;
         }
 
         * { box-sizing: border-box; }
 
         body {
-            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
-            background: var(--Unksyit-bg);
+            font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             color: var(--Unksyit-text);
             display: flex;
             flex-direction: column;
             align-items: center;
+            justify-content: center;
             min-height: 100vh;
             margin: 0;
-            padding: 10px; /* Small padding for low DPI */
+            padding: 1.5rem 1rem;
+            -webkit-font-smoothing: antialiased; /* Better rendering on low DPI */
+            -moz-osx-font-smoothing: grayscale;
         }
 
         .Unksyit-container {
-            background: var(--Unksyit-card);
-            padding: 1rem;
-            border-radius: 12px;
-            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.08);
+            background: var(--Unksyit-card-bg);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            padding: 2rem;
+            border-radius: var(--Unksyit-radius);
+            box-shadow: var(--Unksyit-shadow);
             width: 100%;
-            max-width: 500px; /* Compact */
-            border: 1px solid var(--Unksyit-border);
+            max-width: 480px;
+            border: 1px solid var(--Unksyit-card-border);
             display: flex;
             flex-direction: column;
-            gap: 12px;
+            gap: 1.25rem;
+            transition: box-shadow 0.3s ease;
+        }
+
+        .Unksyit-container:hover {
+            box-shadow: var(--Unksyit-shadow-hover);
         }
 
         .Unksyit-header {
             margin: 0;
             color: var(--Unksyit-primary);
-            font-size: 1.1rem;
+            font-size: 1.4rem;
             text-align: center;
-            font-weight: 700;
-            letter-spacing: 0.5px;
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            text-shadow: 0 1px 2px rgba(0,0,0,0.05);
         }
 
         .Unksyit-controls {
-            display: grid;
-            grid-template-columns: 1fr;
-            gap: 8px;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
         }
 
         .Unksyit-row {
             display: flex;
-            gap: 8px;
+            gap: 0.75rem;
             width: 100%;
         }
 
-        .Unksyit-input, .Unksyit-btn {
-            padding: 10px;
-            font-size: 0.85rem;
-            border-radius: 6px;
-            border: 1px solid var(--Unksyit-border);
+        /* Modernized Inputs */
+        .Unksyit-input {
+            padding: 0.85rem 1rem;
+            font-size: 0.95rem;
+            border-radius: var(--Unksyit-radius-sm);
+            border: 1px solid rgba(0,0,0,0.08);
+            background: #ffffff;
+            color: var(--Unksyit-text);
             outline: none;
             font-family: inherit;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.01);
+            transition: all 0.2s ease;
+            font-weight: 500;
+        }
+
+        .Unksyit-input:focus {
+            border-color: var(--Unksyit-primary);
+            box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+        }
+
+        /* Custom Joyful Selection Box */
+        .Unksyit-select-wrapper {
+            position: relative;
+            flex: 1;
+            display: flex;
+        }
+
+        .Unksyit-select-wrapper::after {
+            content: '▼';
+            position: absolute;
+            right: 14px;
+            top: 50%;
+            transform: translateY(-50%);
+            pointer-events: none;
+            color: var(--Unksyit-primary);
+            font-size: 0.7rem;
         }
 
         .Unksyit-select {
-            flex: 1;
-            background: #fff;
-            color: var(--Unksyit-text);
+            width: 100%;
+            appearance: none;
+            -webkit-appearance: none;
             cursor: pointer;
+            padding-right: 2.5rem;
         }
 
         .Unksyit-custom-time {
             display: none;
-            width: 80px;
+            width: 90px;
             text-align: center;
         }
 
+        /* Vibrant, Soothing Buttons */
         .Unksyit-btn {
             background: var(--Unksyit-primary);
             color: white;
             cursor: pointer;
             font-weight: 600;
-            transition: background 0.2s;
+            transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
             border: none;
+            border-radius: var(--Unksyit-radius-sm);
+            padding: 0.85rem 1rem;
             display: flex;
             align-items: center;
             justify-content: center;
+            box-shadow: 0 4px 6px rgba(74, 144, 226, 0.2);
+            font-size: 0.95rem;
         }
 
         .Unksyit-btn:hover {
             background: var(--Unksyit-primary-hover);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(74, 144, 226, 0.25);
         }
 
-        .Unksyit-btn-clear {
-            background: transparent;
-            color: var(--Unksyit-danger);
-            border: 1px solid var(--Unksyit-danger);
-            padding: 4px 8px;
-            font-size: 0.75rem;
+        .Unksyit-btn:active {
+            transform: translateY(0);
         }
 
-        .Unksyit-btn-clear:hover {
-            background: #ffe6e6;
-        }
-
-        /* Output Box Styling */
+        /* Clean Output Box */
         .Unksyit-output-group {
             display: flex;
-            gap: 6px;
+            gap: 0.75rem;
+            align-items: stretch;
         }
 
         .Unksyit-result-box {
             flex: 1;
-            background: #f8fbff;
-            border: 2px solid var(--Unksyit-border);
-            padding: 10px;
-            border-radius: 6px;
-            font-family: 'Courier New', monospace;
-            font-size: 1.2rem;
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 0.75rem 1rem;
+            border-radius: var(--Unksyit-radius-sm);
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 1.25rem;
             color: var(--Unksyit-primary);
-            font-weight: bold;
+            font-weight: 700;
             text-align: center;
-            letter-spacing: 2px;
+            letter-spacing: 3px;
             overflow-x: auto;
             white-space: nowrap;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
         }
 
         .Unksyit-copy-btn {
-            width: 60px;
             background: var(--Unksyit-success);
+            box-shadow: 0 4px 6px rgba(56, 178, 172, 0.2);
+            width: 75px;
         }
         
         .Unksyit-copy-btn:hover {
-            background: #008040;
+            background: #319795;
+            box-shadow: 0 6px 12px rgba(56, 178, 172, 0.25);
         }
 
-        /* Cute Terminal */
+        /* Soft Terminal Area */
         .Unksyit-terminal-wrapper {
-            border: 1px solid var(--Unksyit-border);
-            border-radius: 8px;
+            background: #ffffff;
+            border: 1px solid rgba(0,0,0,0.05);
+            border-radius: var(--Unksyit-radius-sm);
             overflow: hidden;
             display: flex;
             flex-direction: column;
+            box-shadow: inset 0 2px 6px rgba(0,0,0,0.01);
         }
 
         .Unksyit-terminal-header {
-            background: var(--Unksyit-border);
-            padding: 4px 8px;
-            font-size: 0.75rem;
-            font-weight: bold;
+            background: #f8fafc;
+            padding: 0.6rem 1rem;
+            font-size: 0.8rem;
+            font-weight: 700;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            color: var(--Unksyit-text);
+            color: var(--Unksyit-text-muted);
+            border-bottom: 1px solid rgba(0,0,0,0.04);
+        }
+
+        .Unksyit-btn-clear {
+            background: rgba(252, 129, 129, 0.1);
+            color: var(--Unksyit-danger);
+            border: none;
+            padding: 0.35rem 0.75rem;
+            font-size: 0.75rem;
+            box-shadow: none;
+        }
+
+        .Unksyit-btn-clear:hover {
+            background: rgba(252, 129, 129, 0.2);
+            transform: none;
+            box-shadow: none;
         }
 
         .Unksyit-terminal {
-            background: var(--Unksyit-term-bg);
-            color: var(--Unksyit-term-text);
-            font-family: 'Consolas', 'Monaco', monospace;
-            font-size: 0.75rem;
-            padding: 8px;
-            height: 140px;
+            background: transparent;
+            color: #4a5568;
+            font-family: 'SFMono-Regular', Consolas, 'Liberation Mono', Menlo, monospace;
+            font-size: 0.8rem;
+            padding: 1rem;
+            height: 150px;
             overflow-y: auto;
-            line-height: 1.4;
+            line-height: 1.6;
         }
 
         .Unksyit-term-line {
-            margin-bottom: 3px;
+            margin-bottom: 4px;
             word-break: break-all;
         }
 
         .Unksyit-history-entry {
             color: var(--Unksyit-primary);
-            border-bottom: 1px dashed rgba(0, 102, 204, 0.2);
-            padding-bottom: 2px;
+            border-bottom: 1px dashed rgba(74, 144, 226, 0.2);
+            padding-bottom: 4px;
+            margin-bottom: 6px;
         }
+
+        /* Custom Scrollbar for Terminal */
+        .Unksyit-terminal::-webkit-scrollbar { width: 6px; }
+        .Unksyit-terminal::-webkit-scrollbar-track { background: transparent; }
+        .Unksyit-terminal::-webkit-scrollbar-thumb { background: #cbd5e0; border-radius: 10px; }
+        .Unksyit-terminal::-webkit-scrollbar-thumb:hover { background: #a0aec0; }
 
         #Unksyit_fileInput { display: none; }
     </style>
@@ -196,22 +278,24 @@
 <body>
 
 <div class="Unksyit-container">
-    <h1 class="Unksyit-header">Unksyit DTMF Analyzer</h1>
+    <h1 class="Unksyit-header">Unksyit DTMF Decoder</h1>
     
     <div class="Unksyit-controls">
         <div class="Unksyit-row">
-            <select id="Unksyit_duration" class="Unksyit-input Unksyit-select">
-                <option value="30">Scan 30 Seconds</option>
-                <option value="60">Scan 60 Seconds</option>
-                <option value="90">Scan 90 Seconds</option>
-                <option value="0">Whole File (Slow)</option>
-                <option value="custom">Custom (Sec)</option>
-            </select>
+            <div class="Unksyit-select-wrapper">
+                <select id="Unksyit_duration" class="Unksyit-input Unksyit-select">
+                    <option value="30">Scan 30 Seconds</option>
+                    <option value="60">Scan 60 Seconds</option>
+                    <option value="90">Scan 90 Seconds</option>
+                    <option value="0">Whole File (Slow)</option>
+                    <option value="custom">Custom Time</option>
+                </select>
+            </div>
             <input type="number" id="Unksyit_customInput" class="Unksyit-input Unksyit-custom-time" placeholder="Sec" min="1">
         </div>
         
         <button class="Unksyit-btn" onclick="document.getElementById('Unksyit_fileInput').click()">
-            Upload Media (Audio/Video)
+            Upload Media (Audio or Video)
         </button>
         <input type="file" id="Unksyit_fileInput" accept="audio/*, video/*">
     </div>
@@ -223,8 +307,8 @@
 
     <div class="Unksyit-terminal-wrapper">
         <div class="Unksyit-terminal-header">
-            <span>Analysis & History Terminal</span>
-            <button class="Unksyit-btn Unksyit-btn-clear" onclick="Unksyit_clearHistory()">Clear Data</button>
+            <span>Session History</span>
+            <button class="Unksyit-btn Unksyit-btn-clear" onclick="Unksyit_clearHistory()">Clear</button>
         </div>
         <div class="Unksyit-terminal" id="Unksyit_terminal"></div>
     </div>
