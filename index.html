@@ -1,0 +1,441 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Unksyit Pro DTMF Analyzer</title>
+    <style>
+        /* Unksyit Calm Blue Light Theme */
+        :root {
+            --Unksyit-bg: #f0f7ff;
+            --Unksyit-card: #ffffff;
+            --Unksyit-primary: #0066cc;
+            --Unksyit-primary-hover: #004c99;
+            --Unksyit-text: #2c3e50;
+            --Unksyit-border: #cce0ff;
+            --Unksyit-term-bg: #e6f2ff;
+            --Unksyit-term-text: #004080;
+            --Unksyit-success: #00994d;
+            --Unksyit-danger: #cc0000;
+        }
+
+        * { box-sizing: border-box; }
+
+        body {
+            font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+            background: var(--Unksyit-bg);
+            color: var(--Unksyit-text);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-height: 100vh;
+            margin: 0;
+            padding: 10px; /* Small padding for low DPI */
+        }
+
+        .Unksyit-container {
+            background: var(--Unksyit-card);
+            padding: 1rem;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 102, 204, 0.08);
+            width: 100%;
+            max-width: 500px; /* Compact */
+            border: 1px solid var(--Unksyit-border);
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .Unksyit-header {
+            margin: 0;
+            color: var(--Unksyit-primary);
+            font-size: 1.1rem;
+            text-align: center;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .Unksyit-controls {
+            display: grid;
+            grid-template-columns: 1fr;
+            gap: 8px;
+        }
+
+        .Unksyit-row {
+            display: flex;
+            gap: 8px;
+            width: 100%;
+        }
+
+        .Unksyit-input, .Unksyit-btn {
+            padding: 10px;
+            font-size: 0.85rem;
+            border-radius: 6px;
+            border: 1px solid var(--Unksyit-border);
+            outline: none;
+            font-family: inherit;
+        }
+
+        .Unksyit-select {
+            flex: 1;
+            background: #fff;
+            color: var(--Unksyit-text);
+            cursor: pointer;
+        }
+
+        .Unksyit-custom-time {
+            display: none;
+            width: 80px;
+            text-align: center;
+        }
+
+        .Unksyit-btn {
+            background: var(--Unksyit-primary);
+            color: white;
+            cursor: pointer;
+            font-weight: 600;
+            transition: background 0.2s;
+            border: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .Unksyit-btn:hover {
+            background: var(--Unksyit-primary-hover);
+        }
+
+        .Unksyit-btn-clear {
+            background: transparent;
+            color: var(--Unksyit-danger);
+            border: 1px solid var(--Unksyit-danger);
+            padding: 4px 8px;
+            font-size: 0.75rem;
+        }
+
+        .Unksyit-btn-clear:hover {
+            background: #ffe6e6;
+        }
+
+        /* Output Box Styling */
+        .Unksyit-output-group {
+            display: flex;
+            gap: 6px;
+        }
+
+        .Unksyit-result-box {
+            flex: 1;
+            background: #f8fbff;
+            border: 2px solid var(--Unksyit-border);
+            padding: 10px;
+            border-radius: 6px;
+            font-family: 'Courier New', monospace;
+            font-size: 1.2rem;
+            color: var(--Unksyit-primary);
+            font-weight: bold;
+            text-align: center;
+            letter-spacing: 2px;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+
+        .Unksyit-copy-btn {
+            width: 60px;
+            background: var(--Unksyit-success);
+        }
+        
+        .Unksyit-copy-btn:hover {
+            background: #008040;
+        }
+
+        /* Cute Terminal */
+        .Unksyit-terminal-wrapper {
+            border: 1px solid var(--Unksyit-border);
+            border-radius: 8px;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .Unksyit-terminal-header {
+            background: var(--Unksyit-border);
+            padding: 4px 8px;
+            font-size: 0.75rem;
+            font-weight: bold;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            color: var(--Unksyit-text);
+        }
+
+        .Unksyit-terminal {
+            background: var(--Unksyit-term-bg);
+            color: var(--Unksyit-term-text);
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.75rem;
+            padding: 8px;
+            height: 140px;
+            overflow-y: auto;
+            line-height: 1.4;
+        }
+
+        .Unksyit-term-line {
+            margin-bottom: 3px;
+            word-break: break-all;
+        }
+
+        .Unksyit-history-entry {
+            color: var(--Unksyit-primary);
+            border-bottom: 1px dashed rgba(0, 102, 204, 0.2);
+            padding-bottom: 2px;
+        }
+
+        #Unksyit_fileInput { display: none; }
+    </style>
+</head>
+<body>
+
+<div class="Unksyit-container">
+    <h1 class="Unksyit-header">Unksyit DTMF Analyzer</h1>
+    
+    <div class="Unksyit-controls">
+        <div class="Unksyit-row">
+            <select id="Unksyit_duration" class="Unksyit-input Unksyit-select">
+                <option value="30">Scan 30 Seconds</option>
+                <option value="60">Scan 60 Seconds</option>
+                <option value="90">Scan 90 Seconds</option>
+                <option value="0">Whole File (Slow)</option>
+                <option value="custom">Custom (Sec)</option>
+            </select>
+            <input type="number" id="Unksyit_customInput" class="Unksyit-input Unksyit-custom-time" placeholder="Sec" min="1">
+        </div>
+        
+        <button class="Unksyit-btn" onclick="document.getElementById('Unksyit_fileInput').click()">
+            Upload Media (Audio/Video)
+        </button>
+        <input type="file" id="Unksyit_fileInput" accept="audio/*, video/*">
+    </div>
+
+    <div class="Unksyit-output-group">
+        <input type="text" id="Unksyit_display" class="Unksyit-result-box" readonly placeholder="READY" value="">
+        <button id="Unksyit_copyBtn" class="Unksyit-btn Unksyit-copy-btn">Copy</button>
+    </div>
+
+    <div class="Unksyit-terminal-wrapper">
+        <div class="Unksyit-terminal-header">
+            <span>Analysis & History Terminal</span>
+            <button class="Unksyit-btn Unksyit-btn-clear" onclick="Unksyit_clearHistory()">Clear Data</button>
+        </div>
+        <div class="Unksyit-terminal" id="Unksyit_terminal"></div>
+    </div>
+</div>
+
+<script>
+    // --- Unksyit Core Configuration ---
+    const Unksyit_DTMF = {
+        freqs: { low: [697, 770, 852, 941], high: [1209, 1336, 1477, 1633] },
+        map: [['1','2','3','A'], ['4','5','6','B'], ['7','8','9','C'], ['*','0','#','D']]
+    };
+
+    // --- Unksyit DOM Elements ---
+    const Unksyit_el_display = document.getElementById('Unksyit_display');
+    const Unksyit_el_terminal = document.getElementById('Unksyit_terminal');
+    const Unksyit_el_duration = document.getElementById('Unksyit_duration');
+    const Unksyit_el_custom = document.getElementById('Unksyit_customInput');
+    const Unksyit_el_file = document.getElementById('Unksyit_fileInput');
+    const Unksyit_el_copy = document.getElementById('Unksyit_copyBtn');
+
+    // --- Unksyit Terminal & Storage Logic ---
+    function Unksyit_log(msg, isHistory = false) {
+        const span = document.createElement('div');
+        span.className = 'Unksyit-term-line' + (isHistory ? ' Unksyit-history-entry' : '');
+        span.textContent = `> ${msg}`;
+        Unksyit_el_terminal.prepend(span);
+    }
+
+    function Unksyit_saveResult(filename, result) {
+        if(!result) return;
+        let Unksyit_data = JSON.parse(localStorage.getItem('Unksyit_savedRuns') || '[]');
+        const entry = `${new Date().toLocaleTimeString()} | ${filename} -> [${result}]`;
+        Unksyit_data.unshift(entry);
+        localStorage.setItem('Unksyit_savedRuns', JSON.stringify(Unksyit_data));
+        Unksyit_log(`SAVED: ${result}`, true);
+    }
+
+    function Unksyit_loadHistory() {
+        let Unksyit_data = JSON.parse(localStorage.getItem('Unksyit_savedRuns') || '[]');
+        if(Unksyit_data.length > 0) {
+            Unksyit_log("--- PREVIOUS SESSIONS ---");
+            Unksyit_data.slice(0, 5).reverse().forEach(run => Unksyit_log(run, true));
+        }
+        Unksyit_log("System initialized. Waiting for media...");
+    }
+
+    function Unksyit_clearHistory() {
+        localStorage.removeItem('Unksyit_savedRuns');
+        Unksyit_el_terminal.innerHTML = '';
+        Unksyit_log("Local storage cleared.");
+    }
+
+    // --- Unksyit UI Interactions ---
+    Unksyit_el_duration.addEventListener('change', (e) => {
+        Unksyit_el_custom.style.display = (e.target.value === 'custom') ? 'block' : 'none';
+    });
+
+    Unksyit_el_copy.addEventListener('click', () => {
+        if (!Unksyit_el_display.value) return;
+        navigator.clipboard.writeText(Unksyit_el_display.value).then(() => {
+            const originalText = Unksyit_el_copy.innerText;
+            Unksyit_el_copy.innerText = 'OK!';
+            setTimeout(() => Unksyit_el_copy.innerText = originalText, 1500);
+        });
+    });
+
+    // --- Unksyit Audio/Video Processing ---
+    Unksyit_el_file.addEventListener('change', async (e) => {
+        const Unksyit_file = e.target.files[0];
+        if (!Unksyit_file) return;
+        
+        Unksyit_el_display.value = "LOADING...";
+        Unksyit_log(`Reading ${Unksyit_file.name} (${(Unksyit_file.size/1024/1024).toFixed(2)} MB)`);
+        
+        try {
+            const Unksyit_buffer = await Unksyit_file.arrayBuffer();
+            const Unksyit_ctx = new (window.AudioContext || window.webkitAudioContext)();
+            const Unksyit_audioBuffer = await Unksyit_ctx.decodeAudioData(Unksyit_buffer);
+            
+            Unksyit_log(`Media decoded: ${Unksyit_audioBuffer.duration.toFixed(1)}s @ ${Unksyit_audioBuffer.sampleRate}Hz`);
+            Unksyit_processAudio(Unksyit_audioBuffer, Unksyit_file.name);
+        } catch (err) {
+            Unksyit_log("ERROR: " + err.message);
+            Unksyit_el_display.value = "ERR: FORMAT";
+        }
+    });
+
+    function Unksyit_processAudio(Unksyit_audioBuffer, Unksyit_filename) {
+        Unksyit_el_display.value = "SCANNING...";
+        
+        let Unksyit_durLimit = Unksyit_el_duration.value === 'custom' 
+            ? parseInt(Unksyit_el_custom.value || 0) 
+            : parseInt(Unksyit_el_duration.value);
+            
+        const Unksyit_sampleRate = Unksyit_audioBuffer.sampleRate;
+        let Unksyit_rawData = Unksyit_audioBuffer.getChannelData(0);
+
+        if (Unksyit_durLimit > 0) {
+            const Unksyit_maxSamples = Unksyit_durLimit * Unksyit_sampleRate;
+            if (Unksyit_rawData.length > Unksyit_maxSamples) {
+                Unksyit_rawData = Unksyit_rawData.slice(0, Unksyit_maxSamples);
+            }
+        }
+
+        Unksyit_log("Normalizing signal amplitude...");
+        let Unksyit_maxVal = 0;
+        for (let i = 0; i < Unksyit_rawData.length; i++) {
+            if (Math.abs(Unksyit_rawData[i]) > Unksyit_maxVal) Unksyit_maxVal = Math.abs(Unksyit_rawData[i]);
+        }
+        
+        if (Unksyit_maxVal < 0.001) { 
+            Unksyit_log("Error: Media is silent"); 
+            Unksyit_el_display.value = "SILENT";
+            return; 
+        }
+        
+        const Unksyit_multiplier = 0.95 / Unksyit_maxVal;
+        for (let i = 0; i < Unksyit_rawData.length; i++) { 
+            Unksyit_rawData[i] *= Unksyit_multiplier; 
+        }
+
+        setTimeout(() => Unksyit_runGoertzel(Unksyit_rawData, Unksyit_sampleRate, Unksyit_filename), 50);
+    }
+
+    function Unksyit_runGoertzel(Unksyit_data, Unksyit_sampleRate, Unksyit_filename) {
+        const Unksyit_windowSize = Math.floor(Unksyit_sampleRate * 0.040); 
+        const Unksyit_step = Math.floor(Unksyit_windowSize / 2); 
+        
+        let Unksyit_result = "";
+        let Unksyit_lastChar = null;
+        let Unksyit_runCount = 0;     
+        let Unksyit_gapCount = 0;     
+        
+        const Unksyit_coeffs = {};
+        [...Unksyit_DTMF.freqs.low, ...Unksyit_DTMF.freqs.high].forEach(f => {
+            const k = Math.round(0.5 + (Unksyit_windowSize * f) / Unksyit_sampleRate);
+            Unksyit_coeffs[f] = 2 * Math.cos((2 * Math.PI * k) / Unksyit_windowSize);
+        });
+
+        for (let i = 0; i < Unksyit_data.length - Unksyit_windowSize; i += Unksyit_step) {
+            const Unksyit_chunk = Unksyit_data.subarray(i, i + Unksyit_windowSize);
+            
+            let Unksyit_maxLow = 0, Unksyit_maxLowFreq = 0;
+            let Unksyit_maxHigh = 0, Unksyit_maxHighFreq = 0;
+            
+            Unksyit_DTMF.freqs.low.forEach(f => {
+                const mag = Unksyit_goertzelCore(Unksyit_chunk, Unksyit_coeffs[f]);
+                if (mag > Unksyit_maxLow) { Unksyit_maxLow = mag; Unksyit_maxLowFreq = f; }
+            });
+
+            Unksyit_DTMF.freqs.high.forEach(f => {
+                const mag = Unksyit_goertzelCore(Unksyit_chunk, Unksyit_coeffs[f]);
+                if (mag > Unksyit_maxHigh) { Unksyit_maxHigh = mag; Unksyit_maxHighFreq = f; }
+            });
+
+            const Unksyit_threshold = 10.0; 
+            let Unksyit_valid = false;
+            
+            if (Unksyit_maxLow > Unksyit_threshold && Unksyit_maxHigh > Unksyit_threshold) {
+                const Unksyit_ratio = Unksyit_maxLow / Unksyit_maxHigh;
+                if (Unksyit_ratio > 0.2 && Unksyit_ratio < 5.0) {
+                    Unksyit_valid = true;
+                }
+            }
+
+            if (Unksyit_valid) {
+                const row = Unksyit_DTMF.freqs.low.indexOf(Unksyit_maxLowFreq);
+                const col = Unksyit_DTMF.freqs.high.indexOf(Unksyit_maxHighFreq);
+                const char = Unksyit_DTMF.map[row][col];
+
+                if (char === Unksyit_lastChar) {
+                    Unksyit_runCount++;
+                } else {
+                    Unksyit_runCount = 1;
+                    Unksyit_lastChar = char;
+                }
+
+                if (Unksyit_runCount === 3) {
+                    if (Unksyit_gapCount > 2 || Unksyit_result === "") {
+                        Unksyit_result += char;
+                        Unksyit_log(`Detected: [${char}]`);
+                        Unksyit_gapCount = 0; 
+                    }
+                }
+            } else {
+                Unksyit_gapCount++;
+                if (Unksyit_gapCount > 4) {
+                    Unksyit_lastChar = null;
+                    Unksyit_runCount = 0;
+                }
+            }
+        }
+
+        Unksyit_el_display.value = Unksyit_result || "NO SIGNAL";
+        Unksyit_log("Scan complete.");
+        if(Unksyit_result) Unksyit_saveResult(Unksyit_filename, Unksyit_result);
+    }
+
+    function Unksyit_goertzelCore(Unksyit_samples, Unksyit_coeff) {
+        let q1 = 0, q2 = 0;
+        for (let i = 0; i < Unksyit_samples.length; i++) {
+            const q0 = Unksyit_coeff * q1 - q2 + Unksyit_samples[i];
+            q2 = q1;
+            q1 = q0;
+        }
+        return (q1 * q1) + (q2 * q2) - (Unksyit_coeff * q1 * q2);
+    }
+
+    // Initialize System
+    window.onload = Unksyit_loadHistory;
+</script>
+
+</body>
+</html>
